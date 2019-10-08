@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--开启debug模式-->
+<configuration debug="false">
+    <!--引入application配置信息-->
+    <springProperty scope="context" name="logback.loggly.endpointUrl" source="logback.loggly.endpointUrl" defaultValue="localhost"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}"/>
+    <!--包含配置文件，该配置文件中，定义了 控制台日志是按什么规则，什么形式输出的-->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <!--包含配置文件，该配置文件中，定义了 文件日志是按什么规则，什么形式输出的-->
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+
+    <!--引入第三方appender, 起名为http-->
+    <!--<appender name="HTTP" class="ch.qos.logback.ext.loggly.LogglyAppender">
+        &lt;!&ndash;请求的地址&ndash;&gt;
+        <endpointUrl>${logback.loggly.endpointUrl}</endpointUrl>
+        &lt;!&ndash;定义过滤器&ndash;&gt;
+        <filter class="com.xhw.logbacktest.filters.LogbackFilter"/>
+        &lt;!&ndash;定义输出格式JSON&ndash;&gt;
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter
+                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>true</prettyPrint>
+            </jsonFormatter>
+            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+        </layout>
+    </appender>-->
+
+    <!--引用第三方appender, 起名为batchHttp-->
+    <appender name="batchHttp" class="ch.qos.logback.ext.loggly.LogglyBatchAppender">
+        <endpointUrl>${logback.loggly.endpointUrl}</endpointUrl>
+        <flushIntervalInSeconds>10</flushIntervalInSeconds>
+        <!--定义过滤器-->
+        <filter class="com.xhw.logbacktest.filters.LogbackFilter"/>
+        <!--定义输出格式JSON-->
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter
+                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>true</prettyPrint>
+            </jsonFormatter>
+        </layout>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+        <!--启用第三个appender为HTTP-->
+        <!--<appender-ref ref="HTTP" />-->
+        <!--启用第4个appender为batchHttp-->
+        <appender-ref ref="batchHttp"/>
+    </root>
+</configuration>
