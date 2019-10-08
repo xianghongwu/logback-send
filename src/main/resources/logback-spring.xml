@@ -49,5 +49,6 @@
         <!--<appender-ref ref="HTTP" />-->
         <!--启用第4个appender为batchHttp-->
         <appender-ref ref="batchHttp"/>
+        <!--batchHttp和HTTP两个appender的区别是，batchHttp可以设置日志上传时间间隔。避免有日志就发送。浪费网络资源-->
     </root>
 </configuration>
